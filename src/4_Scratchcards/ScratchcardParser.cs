@@ -6,9 +6,6 @@ public class ScratchcardParser
 {
 	public string Input { get; }
 
-	public IReadOnlyList<string> Errors => _Errors;
-
-	private readonly List<string> _Errors = new();
 	private int _Pointer;
 	private char _Current;
 	private char _Peek;
@@ -26,8 +23,8 @@ public class ScratchcardParser
 		// Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 		
 		int cardNumber = ParseCardNumber();
-		ImmutableArray<int> winningNumbers = ParseWinningNumbers().ToImmutableArray();
-		ImmutableArray<int> chosenNumbers = ParseChosenNumbers().ToImmutableArray();
+		ImmutableArray<int> winningNumbers = ParseNumbersUntil('|').ToImmutableArray();
+		ImmutableArray<int> chosenNumbers = ParseNumbersUntil('\n').ToImmutableArray();
 
 		return new Scratchcard(cardNumber, winningNumbers, chosenNumbers);
 
@@ -37,23 +34,15 @@ public class ScratchcardParser
 			return ParseNumber();
 		}
 
-		IEnumerable<int> ParseWinningNumbers()
+		IEnumerable<int> ParseNumbersUntil(char c)
 		{
-			while (!ExpectPipe())
+			while (_Peek != c && _Peek != '\0')
 			{
-				while (!ExpectNumber()) { MoveNext(); }
-				yield return ParseNumber();
+				SkipSpaces();
+				if (ExpectNumber()) { yield return ParseNumber(); }
+				MoveNext();
 			}
-			MoveNext();
-		}
 
-		IEnumerable<int> ParseChosenNumbers()
-		{
-			while (!ExpectEndOfCard())
-			{
-				while (!ExpectNumber()) { MoveNext(); }
-				yield return ParseNumber();
-			}
 			MoveNext();
 		}
 	}
@@ -62,24 +51,22 @@ public class ScratchcardParser
 	{
 		int acc = 0;
 
-		do
+		while (ExpectNumber())
 		{
 			MoveNext();
 			acc = acc * 10 + (_Current - '0');
 		}
-		while (CurrentIsNumber());
 
 		return acc;
 	}
 
-	private bool ExpectEndOfCard() => _Peek is '\n' or '\0';
-
-	private bool ExpectPipe() => _Peek == '|';
+	private void SkipSpaces()
+	{
+		while (_Peek == ' ') { MoveNext(); }
+	}
 
 	private bool ExpectNumber() => char.IsNumber(_Peek);
-
-	private bool CurrentIsNumber() => char.IsNumber(_Current);
-
+	
 	private void MoveNext()
 	{
 		_Current = _Peek;
