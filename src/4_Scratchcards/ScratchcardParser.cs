@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace _4_Scratchcards;
 
@@ -15,35 +16,34 @@ public class ScratchcardParser
 		Input = input ?? throw new ArgumentNullException(nameof(input));
 		_Pointer = 0;
 		_Peek = Input[0];
-
+		MoveNext();
+	}
+	
+	public IEnumerable<Scratchcard> ParseAll()
+	{
+		while (_Current != '\0')
+		{
+			yield return ParseLine();
+		}
 	}
 
 	public Scratchcard ParseLine()
 	{
-		// Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
-		
-		int cardNumber = ParseCardNumber();
+		int cardNumber = ParseNumbersUntil(':').Single();
 		ImmutableArray<int> winningNumbers = ParseNumbersUntil('|').ToImmutableArray();
+		MoveNext();
 		ImmutableArray<int> chosenNumbers = ParseNumbersUntil('\n').ToImmutableArray();
 
 		return new Scratchcard(cardNumber, winningNumbers, chosenNumbers);
 
-		int ParseCardNumber()
-		{
-			while (!ExpectNumber()) { MoveNext(); }
-			return ParseNumber();
-		}
-
 		IEnumerable<int> ParseNumbersUntil(char c)
 		{
-			while (_Peek != c && _Peek != '\0')
+			while (_Current != c && _Current != '\0')
 			{
-				SkipSpaces();
+				while (_Peek == ' ') { MoveNext(); }
 				if (ExpectNumber()) { yield return ParseNumber(); }
 				MoveNext();
 			}
-
-			MoveNext();
 		}
 	}
 
@@ -58,11 +58,6 @@ public class ScratchcardParser
 		}
 
 		return acc;
-	}
-
-	private void SkipSpaces()
-	{
-		while (_Peek == ' ') { MoveNext(); }
 	}
 
 	private bool ExpectNumber() => char.IsNumber(_Peek);

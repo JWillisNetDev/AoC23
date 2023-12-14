@@ -10,7 +10,7 @@ I like to parse the input into an object model and act upon that object model, w
 Well, yes, but no. I follow a convention:
 `(Method or action name)_(Given input)_(Expected outcome)`
 
-If the expected outcome is simply "successful," "success," or "valid," then  I omit the expected outcome portion.
+If the given input is obvious from the test and not generic, I omit the given input portion. If the expected outcome is simply "successful," "success," or "valid," then  I omit the expected outcome portion.
 
 ## Doesn't sharing your code go against Advent of Code's spirit?
 I would say yes... but in this case, no. Someone looking up answers does for free stars definitely does, though. **Don't cheat yourself!**

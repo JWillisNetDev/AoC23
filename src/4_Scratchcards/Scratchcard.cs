@@ -2,23 +2,10 @@
 
 namespace _4_Scratchcards;
 
-public record class Scratchcard(int CardNumber, ImmutableArray<int> WinningNumbers, ImmutableArray<int> ChosenNumbers)
+public record struct Scratchcard(int CardNumber, ImmutableArray<int> WinningNumbers, ImmutableArray<int> ChosenNumbers)
 {
-	public int GetScore()
+	public Scratchcard(int cardNumber, IEnumerable<int> winningNumbers, IEnumerable<int> chosenNumbers)
+		: this(cardNumber, winningNumbers.ToImmutableArray(), chosenNumbers.ToImmutableArray())
 	{
-		int acc = 0;
-
-		foreach (int number in ChosenNumbers.Where(WinningNumbers.Contains))
-		{
-			if (acc == 0)
-			{
-				acc = 1;
-				continue;
-			}
-
-			acc *= 2;
-		}
-
-		return acc;
 	}
 }
