@@ -2,7 +2,7 @@
 
 namespace _4_Scratchcards.Tests;
 
-public class ScratchcardReaderTests
+public class ScratchcardPuzzleSolverTests
 {
 	[Fact]
 	public void Part1()
@@ -26,10 +26,10 @@ public class ScratchcardReaderTests
 
 		};
 
-		ScratchcardReader reader = new(scratchcards);
+		ScratchcardPuzzleSolver puzzleSolver = new(scratchcards);
 
 		// Act
-		int sumWinners = reader.Part1();
+		int sumWinners = puzzleSolver.Part1();
 
 		// Assert
 		sumWinners.Should().Be(13);
@@ -57,10 +57,10 @@ public class ScratchcardReaderTests
 			new(6, new[] { 31, 18, 13, 56, 72 }, new[] { 74, 77, 10, 23, 35, 67, 36, 11 }),
 		};
 
-		ScratchcardReader reader = new(scratchcards);
+		ScratchcardPuzzleSolver puzzleSolver = new(scratchcards);
 
 		// Act
-		int sumWinners = reader.Part2();
+		int sumWinners = puzzleSolver.Part2();
 
 		// Assert
 		sumWinners.Should().Be(30);

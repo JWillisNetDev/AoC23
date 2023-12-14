@@ -1,15 +1,15 @@
 ﻿namespace _4_Scratchcards;
 
-public class ScratchcardReader
+public class ScratchcardPuzzleSolver
 {
 	public IReadOnlyList<Scratchcard> Scratchcards { get; }
 
-	public ScratchcardReader(IReadOnlyList<Scratchcard> scratchcards)
+	public ScratchcardPuzzleSolver(IReadOnlyList<Scratchcard> scratchcards)
 	{
 		Scratchcards = scratchcards;
 	}
 
-	public ScratchcardReader(IEnumerable<Scratchcard> scratchcards)
+	public ScratchcardPuzzleSolver(IEnumerable<Scratchcard> scratchcards)
 	{
 		Scratchcards = scratchcards.ToArray();
 	}
@@ -37,7 +37,7 @@ public class ScratchcardReader
 				acc += score;
 				for (int i = 0; i < score; i++)
 				{
-					wonCards.Push(Scratchcards[scratchcard.CardNumber + i]);
+					wonCards.Push(Scratchcards[scratchcard.CardNumber + i]); // Works because CardNumbers are 1 greater than their index
 				}
 			}
 		}
